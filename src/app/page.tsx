@@ -230,16 +230,16 @@ function AskGrainSheet({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         side="right"
-        className="w-full border-l-0 p-0 sm:w-[420px]"
+        className="flex h-dvh max-h-[100dvh] w-full flex-col border-l-0 p-0 sm:w-[420px]"
       >
         <SheetHeader className="flex flex-col gap-1 border-b bg-white/90 px-6 py-4">
           <SheetTitle className="text-lg font-semibold">Ask Grain</SheetTitle>
           <p className="text-xs text-neutral-500">Tap a quick prompt or type your own question.</p>
         </SheetHeader>
-        <div className="flex h-full flex-col gap-4 p-4 text-sm sm:p-6">
+        <div className="flex h-full min-h-0 flex-col gap-4 overflow-hidden p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] text-sm sm:p-6">
           <div
             ref={listRef}
-            className="flex-1 space-y-2 overflow-auto rounded-2xl border border-neutral-200 bg-neutral-50/60 p-3"
+            className="flex-1 space-y-2 overflow-y-auto rounded-2xl border border-neutral-200 bg-neutral-50/60 p-3"
           >
             {chatHistory.map((m, i) => (
               <div
@@ -269,7 +269,7 @@ function AskGrainSheet({
               <Button
                 size="sm"
                 variant="secondary"
-                className="rounded-xl flex-1"
+                className="flex-1 rounded-xl min-w-[140px]"
                 onClick={() => applyQuickPrompt("Why this recommendation?")}
                 disabled={isSending}
               >
@@ -278,7 +278,7 @@ function AskGrainSheet({
               <Button
                 size="sm"
                 variant="secondary"
-                className="rounded-xl flex-1"
+                className="flex-1 rounded-xl min-w-[140px]"
                 onClick={() => applyQuickPrompt("FHSA vs TFSA vs RRSP")}
                 disabled={isSending}
               >
