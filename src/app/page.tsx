@@ -740,15 +740,16 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   const progressPct = Math.round(((step + 1) / steps.length) * 100);
   const upcomingSteps = steps.slice(step + 1, step + 3);
   const onboardingContainerRef = useRef<HTMLDivElement | null>(null);
+  const [hasSeenFirstStep, setHasSeenFirstStep] = useState(false);
 
   useEffect(() => {
+    const scrollBehavior = step === 0 && !hasSeenFirstStep ? "auto" : "smooth";
     if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "auto" });
+      window.scrollTo({ top: 0, behavior: scrollBehavior });
     }
-    if (onboardingContainerRef.current) {
-      onboardingContainerRef.current.scrollIntoView({ behavior: step === 0 ? "auto" : "smooth", block: "start" });
-    }
-  }, [step]);
+    onboardingContainerRef.current?.scrollIntoView({ behavior: scrollBehavior, block: "start" });
+    if (step === 0 && !hasSeenFirstStep) setHasSeenFirstStep(true);
+  }, [step, hasSeenFirstStep]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
