@@ -730,7 +730,7 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: step === 0 ? "auto" : "smooth" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
     if (onboardingContainerRef.current) {
       onboardingContainerRef.current.scrollIntoView({ behavior: step === 0 ? "auto" : "smooth", block: "start" });
