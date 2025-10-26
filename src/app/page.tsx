@@ -159,6 +159,7 @@ function AskGrainSheet({
   ]);
   const [isSending, setIsSending] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (listRef.current) {
@@ -167,11 +168,10 @@ function AskGrainSheet({
   }, [chatHistory]);
 
   useEffect(() => {
-    if (!open) return;
-    if (presetMsg && !chatInput.trim()) {
-      setChatInput(presetMsg);
+    if (!open) {
+      setChatInput("");
     }
-  }, [presetMsg, open, chatInput]);
+  }, [open]);
 
   const handleSend = async () => {
     const trimmed = chatInput.trim();
@@ -224,6 +224,7 @@ function AskGrainSheet({
   const applyQuickPrompt = (prompt: string) => {
     if (isSending) return;
     setChatInput(prompt);
+    textareaRef.current?.focus();
   };
 
   return (
@@ -259,6 +260,7 @@ function AskGrainSheet({
           )}
           <div className="space-y-3 rounded-2xl border border-neutral-200 bg-white/90 p-3">
             <Textarea
+              ref={textareaRef}
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               placeholder="Ask anything… e.g., How should I split extra savings this month?"
@@ -266,6 +268,17 @@ function AskGrainSheet({
               className="min-h-[90px] rounded-xl"
             />
             <div className="flex flex-wrap gap-2 text-[11px] text-neutral-500">
+              {presetMsg && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="flex-1 min-w-[140px] rounded-xl"
+                  onClick={() => applyQuickPrompt(presetMsg)}
+                  disabled={isSending}
+                >
+                  {presetMsg.length > 32 ? `${presetMsg.slice(0, 32)}…` : presetMsg}
+                </Button>
+              )}
               <Button
                 size="sm"
                 variant="secondary"
