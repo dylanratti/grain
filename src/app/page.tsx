@@ -707,6 +707,16 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
 
   const progressPct = Math.round(((step + 1) / steps.length) * 100);
   const upcomingSteps = steps.slice(step + 1, step + 3);
+  const onboardingContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: step === 0 ? "auto" : "smooth" });
+    }
+    if (onboardingContainerRef.current) {
+      onboardingContainerRef.current.scrollIntoView({ behavior: step === 0 ? "auto" : "smooth", block: "start" });
+    }
+  }, [step]);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -738,11 +748,11 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-5 py-10">
+      <main ref={onboardingContainerRef} className="max-w-5xl mx-auto px-4 py-8 sm:px-5 sm:py-10 transition-[padding]">
         <Card className="rounded-3xl border-none shadow-xl shadow-emerald-100/30">
           <CardContent className="p-0">
             <div className="grid gap-0 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-              <aside className="space-y-6 border-b border-emerald-100/60 bg-emerald-50/90 p-6 sm:p-8 lg:border-b-0 lg:border-r">
+              <aside className="space-y-6 border-b border-emerald-100/60 bg-emerald-50/90 p-6 sm:p-8 lg:border-b-0 lg:border-r lg:sticky lg:top-8">
                 <div className="space-y-2">
                   <div className="text-xs uppercase tracking-[0.28em] text-emerald-600/80">Guided onboarding</div>
                   <div className="text-xl font-semibold text-emerald-900">{steps[step].title}</div>
@@ -777,7 +787,7 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <Button
                     variant="secondary"
-                    className="rounded-2xl px-5 py-2"
+                    className="rounded-2xl px-5 py-2 w-full sm:w-auto"
                     onClick={() => setStep((s) => Math.max(0, s - 1))}
                     disabled={step === 0}
                   >
@@ -786,13 +796,13 @@ function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
                   <div className="flex flex-wrap gap-3">
                     <Button
                       variant="secondary"
-                      className="rounded-2xl px-5 py-2"
+                      className="rounded-2xl px-5 py-2 w-full sm:w-auto"
                       onClick={() => setChatOpen(true)}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" /> Ask Grain
                     </Button>
                     <Button
-                      className="rounded-2xl px-5 py-2"
+                      className="rounded-2xl px-5 py-2 w-full sm:w-auto"
                       onClick={() => {
                         if (step >= steps.length - 1) {
                           saveSeed();
