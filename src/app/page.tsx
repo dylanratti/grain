@@ -158,6 +158,13 @@ function AskGrainSheet({
     { role: "assistant", text: defaultGreeting },
   ]);
   const [isSending, setIsSending] = useState(false);
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   useEffect(() => {
     if (!open) return;
@@ -221,16 +228,27 @@ function AskGrainSheet({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent side="right" className="w-[420px] p-0">
-        <SheetHeader className="p-6 border-b">
-          <SheetTitle>Ask Grain</SheetTitle>
+      <SheetContent
+        side="right"
+        className="w-full border-l-0 p-0 sm:w-[420px]"
+      >
+        <SheetHeader className="flex flex-col gap-1 border-b bg-white/90 px-6 py-4">
+          <SheetTitle className="text-lg font-semibold">Ask Grain</SheetTitle>
+          <p className="text-xs text-neutral-500">Tap a quick prompt or type your own question.</p>
         </SheetHeader>
-        <div className="p-6 space-y-4 text-sm">
-          <div className="space-y-2 max-h-[50vh] overflow-auto pr-1">
+        <div className="flex h-full flex-col gap-4 p-4 text-sm sm:p-6">
+          <div
+            ref={listRef}
+            className="flex-1 space-y-2 overflow-auto rounded-2xl border border-neutral-200 bg-neutral-50/60 p-3"
+          >
             {chatHistory.map((m, i) => (
               <div
                 key={`${m.role}-${i}-${m.text.slice(0, 12)}`}
-                className={`p-3 rounded-xl border ${m.role === "assistant" ? "bg-neutral-100" : "bg-emerald-50"}`}
+                className={`w-full rounded-2xl border p-3 text-sm leading-relaxed shadow-sm ${
+                  m.role === "assistant"
+                    ? "bg-white text-neutral-800"
+                    : "bg-emerald-50 text-emerald-900"
+                }`}
               >
                 {m.text}
               </div>
@@ -239,18 +257,19 @@ function AskGrainSheet({
           {isSending && (
             <div className="text-xs text-neutral-500 italic">Grain is thinking…</div>
           )}
-          <Textarea
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            placeholder="Ask anything… e.g., How should I split extra savings this month?"
-            disabled={isSending}
-          />
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex gap-2 text-[11px] text-neutral-500">
+          <div className="space-y-3 rounded-2xl border border-neutral-200 bg-white/90 p-3">
+            <Textarea
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Ask anything… e.g., How should I split extra savings this month?"
+              disabled={isSending}
+              className="min-h-[90px] rounded-xl"
+            />
+            <div className="flex flex-wrap gap-2 text-[11px] text-neutral-500">
               <Button
                 size="sm"
                 variant="secondary"
-                className="rounded-xl"
+                className="rounded-xl flex-1"
                 onClick={() => applyQuickPrompt("Why this recommendation?")}
                 disabled={isSending}
               >
@@ -259,7 +278,7 @@ function AskGrainSheet({
               <Button
                 size="sm"
                 variant="secondary"
-                className="rounded-xl"
+                className="rounded-xl flex-1"
                 onClick={() => applyQuickPrompt("FHSA vs TFSA vs RRSP")}
                 disabled={isSending}
               >
@@ -267,7 +286,7 @@ function AskGrainSheet({
               </Button>
             </div>
             <Button
-              className="rounded-xl"
+              className="w-full rounded-2xl"
               onClick={handleSend}
               disabled={isSending || !chatInput.trim()}
             >
